@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1f8a70" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="語校儲備金" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>2年後日本語言學校儲備金</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icon.svg" />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --ink: #18202f;
+        --muted: #637086;
+        --line: #dfe5ef;
+        --brand: #1f8a70;
+        --brand-dark: #146b56;
+        --accent: #f0a23a;
+        --danger: #cf3f3f;
+        --shadow: 0 16px 36px rgba(34, 47, 72, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(180deg, rgba(31, 138, 112, 0.12), transparent 280px),
+          var(--bg);
+        color: var(--ink);
+        font-family:
+          "Noto Sans TC",
+          "Microsoft JhengHei",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app {
+        width: min(960px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0;
+      }
+
+      header {
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: clamp(1.75rem, 4vw, 2.6rem);
+        line-height: 1.15;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      .progress-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        padding: 22px;
+        margin-bottom: 16px;
+      }
+
+      .notice {
+        display: none;
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        border: 1px solid #f1d18e;
+        border-radius: 8px;
+        background: #fff8e8;
+        color: #6f4d05;
+        line-height: 1.55;
+      }
+
+      .notice.is-visible {
+        display: block;
+      }
+
+      .progress-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .money-main {
+        margin: 0;
+        font-size: clamp(1.65rem, 5vw, 3rem);
+        line-height: 1.1;
+        font-weight: 800;
+      }
+
+      .money-caption {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .percent {
+        min-width: 92px;
+        text-align: right;
+        color: var(--brand-dark);
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        font-weight: 800;
+      }
+
+      .bar {
+        height: 18px;
+        overflow: hidden;
+        background: #e8edf5;
+        border-radius: 999px;
+        border: 1px solid #d8dfeb;
+      }
+
+      .bar-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--brand), #45b69c);
+        border-radius: inherit;
+        transition: width 260ms ease;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .stat {
+        padding: 12px;
+        border-radius: 8px;
+        background: #f7f9fc;
+        border: 1px solid var(--line);
+      }
+
+      .stat-label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+
+      .stat-value {
+        display: block;
+        margin-top: 4px;
+        font-weight: 800;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+      }
+
+      h2 {
+        margin: 0 0 14px;
+        font-size: 1.1rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .input-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      input {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #cfd7e5;
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--ink);
+        background: #fff;
+      }
+
+      input:focus {
+        outline: 3px solid rgba(31, 138, 112, 0.2);
+        border-color: var(--brand);
+      }
+
+      button {
+        min-height: 44px;
+        border: 0;
+        border-radius: 8px;
+        padding: 0 16px;
+        color: #fff;
+        background: var(--brand);
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: var(--brand-dark);
+      }
+
+      .secondary {
+        background: #edf2f7;
+        color: var(--ink);
+      }
+
+      .secondary:hover {
+        background: #dfe7f0;
+      }
+
+      .records {
+        grid-column: 1 / -1;
+      }
+
+      .record-list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .record {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 12px;
+        align-items: center;
+        min-height: 48px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfe;
+      }
+
+      .record-date {
+        color: var(--muted);
+      }
+
+      .record-amount {
+        font-weight: 800;
+        color: var(--brand-dark);
+      }
+
+      .delete {
+        min-height: 34px;
+        padding: 0 10px;
+        background: transparent;
+        border: 1px solid #f0c3c3;
+        color: var(--danger);
+      }
+
+      .delete:hover {
+        background: #fff2f2;
+      }
+
+      .empty {
+        margin: 0;
+        padding: 20px;
+        border: 1px dashed #cfd7e5;
+        border-radius: 8px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .hint {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .toast {
+        min-height: 22px;
+        margin-top: 10px;
+        color: var(--brand-dark);
+        font-weight: 700;
+      }
+
+      .tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      @media (max-width: 720px) {
+        .app {
+          width: min(100% - 24px, 960px);
+          padding: 20px 0;
+        }
+
+        .progress-top,
+        .grid,
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .progress-top {
+          display: grid;
+        }
+
+        .percent {
+          text-align: left;
+        }
+
+        .input-row {
+          grid-template-columns: 1fr;
+        }
+
+        .record {
+          grid-template-columns: 1fr auto;
+        }
+
+        .record-amount {
+          grid-column: 1;
+        }
+
+        .delete {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>2年後日本語言學校儲備金</h1>
+        <p class="subtitle">每存一筆，就離出發更近一點。</p>
+      </header>
+
+      <p class="notice" id="storageNotice">
+        目前是用檔案模式開啟，手機瀏覽器可能不會保留紀錄。建議改用網址開啟後加入手機主畫面，資料會更穩定。
+      </p>
+
+      <section class="progress-panel" aria-label="儲蓄進度">
+        <div class="progress-top">
+          <div>
+            <p class="money-main" id="savedAmount">NT$0</p>
+            <p class="money-caption" id="targetText">目標 NT$0</p>
+          </div>
+          <div class="percent" id="percentText">0%</div>
+        </div>
+        <div class="bar" aria-hidden="true">
+          <div class="bar-fill" id="progressFill"></div>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">還差</span>
+            <span class="stat-value" id="remainingAmount">NT$0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">儲蓄筆數</span>
+            <span class="stat-value" id="recordCount">0 筆</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">平均每月需存</span>
+            <span class="stat-value" id="monthlyNeed">NT$0</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <form class="panel" id="targetForm">
+          <h2>設定目標金額</h2>
+          <label for="targetInput">你的日本語言學校儲備金目標</label>
+          <div class="input-row">
+            <input id="targetInput" inputmode="numeric" autocomplete="off" placeholder="例如 300000" />
+            <button type="submit">儲存</button>
+          </div>
+          <p class="hint">可以之後再修改，進度會自動重新計算。</p>
+        </form>
+
+        <form class="panel" id="savingForm">
+          <h2>新增一筆學費儲蓄</h2>
+          <label for="savingInput">這次存了多少</label>
+          <div class="input-row">
+            <input id="savingInput" inputmode="numeric" autocomplete="off" placeholder="例如 5000" />
+            <button type="submit">加入</button>
+          </div>
+          <p class="toast" id="toast" aria-live="polite"></p>
+        </form>
+
+        <section class="panel records">
+          <h2>儲蓄紀錄</h2>
+          <ul class="record-list" id="recordList"></ul>
+          <p class="empty" id="emptyState">還沒有紀錄。先新增第一筆學費儲蓄吧。</p>
+          <div class="tools">
+            <button class="secondary" type="button" id="exportButton">匯出備份</button>
+            <button class="secondary" type="button" id="importButton">匯入備份</button>
+            <input class="file-input" id="importInput" type="file" accept="application/json,.json" />
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const STORAGE_KEY = "japan-language-school-savings";
+      const DB_NAME = "japan-language-school-savings-db";
+      const STORE_NAME = "app-state";
+      const MONTHS_TO_GOAL = 24;
+
+      const defaultState = {
+        targetAmount: 300000,
+        savings: []
+      };
+
+      const els = {
+        savedAmount: document.querySelector("#savedAmount"),
+        targetText: document.querySelector("#targetText"),
+        percentText: document.querySelector("#percentText"),
+        progressFill: document.querySelector("#progressFill"),
+        remainingAmount: document.querySelector("#remainingAmount"),
+        recordCount: document.querySelector("#recordCount"),
+        monthlyNeed: document.querySelector("#monthlyNeed"),
+        targetForm: document.querySelector("#targetForm"),
+        targetInput: document.querySelector("#targetInput"),
+        savingForm: document.querySelector("#savingForm"),
+        savingInput: document.querySelector("#savingInput"),
+        recordList: document.querySelector("#recordList"),
+        emptyState: document.querySelector("#emptyState"),
+        toast: document.querySelector("#toast"),
+        storageNotice: document.querySelector("#storageNotice"),
+        exportButton: document.querySelector("#exportButton"),
+        importButton: document.querySelector("#importButton"),
+        importInput: document.querySelector("#importInput")
+      };
+
+      let state = { ...defaultState };
+
+      function normalizeState(value) {
+        return {
+          targetAmount: Number(value?.targetAmount) || defaultState.targetAmount,
+          savings: Array.isArray(value?.savings)
+            ? value.savings
+                .map((item) => ({
+                  id: String(item.id || Date.now()),
+                  amount: Number(item.amount) || 0,
+                  date: item.date || new Date().toISOString()
+                }))
+                .filter((item) => item.amount > 0)
+            : []
+        };
+      }
+
+      function openDb() {
+        return new Promise((resolve, reject) => {
+          if (!("indexedDB" in window)) {
+            reject(new Error("IndexedDB is not available."));
+            return;
+          }
+
+          const request = indexedDB.open(DB_NAME, 1);
+          request.onupgradeneeded = () => {
+            request.result.createObjectStore(STORE_NAME);
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function readFromIndexedDb() {
+        const db = await openDb();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, "readonly");
+          const request = tx.objectStore(STORE_NAME).get(STORAGE_KEY);
+          request.onsuccess = () => resolve(request.result || null);
+          request.onerror = () => reject(request.error);
+          tx.oncomplete = () => db.close();
+        });
+      }
+
+      async function writeToIndexedDb(value) {
+        const db = await openDb();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, "readwrite");
+          tx.objectStore(STORE_NAME).put(value, STORAGE_KEY);
+          tx.oncomplete = () => {
+            db.close();
+            resolve();
+          };
+          tx.onerror = () => reject(tx.error);
+        });
+      }
+
+      function readFromLocalStorage() {
+        const raw = window.localStorage?.getItem(STORAGE_KEY);
+        if (!raw) return null;
+
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return null;
+        }
+      }
+
+      async function loadState() {
+        try {
+          const indexedDbState = await readFromIndexedDb();
+          if (indexedDbState) return normalizeState(indexedDbState);
+        } catch {
+          // Fallback below covers browsers or file viewers that block IndexedDB.
+        }
+
+        return normalizeState(readFromLocalStorage() || defaultState);
+      }
+
+      async function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch {
+          // IndexedDB may still succeed if localStorage is blocked.
+        }
+
+        try {
+          await writeToIndexedDb(state);
+        } catch {
+          showStorageNotice();
+        }
+      }
+
+      function showStorageNotice() {
+        els.storageNotice.classList.add("is-visible");
+      }
+
+      function detectStorageMode() {
+        if (window.location.protocol === "file:") {
+          showStorageNotice();
+        }
+      }
+
+      function parseAmount(value) {
+        const normalized = String(value).replace(/[,\s]/g, "");
+        const amount = Number(normalized);
+        return Number.isFinite(amount) ? Math.floor(amount) : 0;
+      }
+
+      function formatMoney(amount) {
+        return new Intl.NumberFormat("zh-TW", {
+          style: "currency",
+          currency: "TWD",
+          maximumFractionDigits: 0
+        }).format(amount);
+      }
+
+      function formatDate(dateText) {
+        return new Intl.DateTimeFormat("zh-TW", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }).format(new Date(dateText));
+      }
+
+      function getTotalSaved() {
+        return state.savings.reduce((sum, item) => sum + item.amount, 0);
+      }
+
+      function render() {
+        const totalSaved = getTotalSaved();
+        const remaining = Math.max(state.targetAmount - totalSaved, 0);
+        const percent = state.targetAmount > 0 ? Math.min((totalSaved / state.targetAmount) * 100, 100) : 0;
+        const roundedPercent = Math.floor(percent);
+        const monthlyNeed = Math.ceil(remaining / MONTHS_TO_GOAL);
+
+        els.savedAmount.textContent = formatMoney(totalSaved);
+        els.targetText.textContent = `目標 ${formatMoney(state.targetAmount)}`;
+        els.percentText.textContent = `${roundedPercent}%`;
+        els.progressFill.style.width = `${percent}%`;
+        els.remainingAmount.textContent = formatMoney(remaining);
+        els.recordCount.textContent = `${state.savings.length} 筆`;
+        els.monthlyNeed.textContent = formatMoney(monthlyNeed);
+        els.targetInput.value = state.targetAmount || "";
+
+        els.recordList.innerHTML = "";
+        els.emptyState.hidden = state.savings.length > 0;
+
+        [...state.savings]
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .forEach((item) => {
+            const li = document.createElement("li");
+            li.className = "record";
+            li.innerHTML = `
+              <span class="record-date">${formatDate(item.date)}</span>
+              <span class="record-amount">+ ${formatMoney(item.amount)}</span>
+              <button class="delete" type="button" data-id="${item.id}" aria-label="刪除 ${formatMoney(item.amount)}">刪除</button>
+            `;
+            els.recordList.appendChild(li);
+          });
+      }
+
+      function showToast(message) {
+        els.toast.textContent = message;
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => {
+          els.toast.textContent = "";
+        }, 2400);
+      }
+
+      els.targetForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const amount = parseAmount(els.targetInput.value);
+        if (amount <= 0) {
+          showToast("請輸入大於 0 的目標金額。");
+          return;
+        }
+
+        state.targetAmount = amount;
+        saveState();
+        render();
+        showToast("目標金額已更新。");
+      });
+
+      els.savingForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const amount = parseAmount(els.savingInput.value);
+        if (amount <= 0) {
+          showToast("請輸入大於 0 的儲蓄金額。");
+          return;
+        }
+
+        state.savings.push({
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          amount,
+          date: new Date().toISOString()
+        });
+        els.savingInput.value = "";
+        saveState();
+        render();
+        showToast(`已加入 ${formatMoney(amount)}。`);
+      });
+
+      els.recordList.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-id]");
+        if (!button) return;
+
+        state.savings = state.savings.filter((item) => item.id !== button.dataset.id);
+        saveState();
+        render();
+        showToast("已刪除這筆紀錄。");
+      });
+
+      els.exportButton.addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `日本語言學校儲備金-${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        showToast("已建立備份檔。");
+      });
+
+      els.importButton.addEventListener("click", () => {
+        els.importInput.click();
+      });
+
+      els.importInput.addEventListener("change", async () => {
+        const file = els.importInput.files?.[0];
+        if (!file) return;
+
+        try {
+          const text = await file.text();
+          state = normalizeState(JSON.parse(text));
+          await saveState();
+          render();
+          showToast("備份已匯入。");
+        } catch {
+          showToast("備份檔格式不正確。");
+        } finally {
+          els.importInput.value = "";
+        }
+      });
+
+      async function registerServiceWorker() {
+        if (!("serviceWorker" in navigator)) return;
+        if (!["http:", "https:"].includes(window.location.protocol)) return;
+
+        try {
+          await navigator.serviceWorker.register("./sw.js");
+        } catch {
+          showStorageNotice();
+        }
+      }
+
+      async function init() {
+        detectStorageMode();
+        state = await loadState();
+        render();
+        registerServiceWorker();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
